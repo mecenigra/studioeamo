@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import Nav from "@/components/Nav";
+import HeroSlideshow from "@/components/HeroSlideshow";
 
 export default function Home() {
   return (
@@ -8,23 +8,12 @@ export default function Home() {
       {/* Transparent nav üstte */}
       <Nav transparent={true} />
 
-      {/* Hero — tam fotoğraf, kırpılmaz */}
-      <section style={{
+      {/* Hero — 3 fotoğraflı slideshow, kırpılmaz */}
+      <section data-hero style={{
         position: "relative",
         width: "100%",
       }}>
-        <Image
-          src="/hero.jpg"
-          alt="Studio EAMO — Archeo Series"
-          width={4928}
-          height={3280}
-          priority
-          style={{
-            width: "100%",
-            height: "auto",
-            display: "block",
-          }}
-        />
+        <HeroSlideshow />
         {/* Çok hafif üst gradient — nav okunabilirliği için */}
         <div style={{
           position: "absolute",
