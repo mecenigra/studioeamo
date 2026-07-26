@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #F7F6F2;
+  --ink: #1A1A18;
+  --ink-light: #6B6B67;
+  --rule: #D8D5CF;
+  --sans: 'DM Sans', Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: var(--bg);
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--bg);
+}
