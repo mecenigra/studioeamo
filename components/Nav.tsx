@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 interface NavProps {
@@ -25,12 +24,14 @@ export default function Nav({ transparent = false }: NavProps) {
     }}>
       {/* Sol — Logo */}
       <Link href="/">
-        <Image
-          src="/logo.png"
+        <img
+          src="/logo.svg"
           alt="Studio EAMO"
-          width={44}
-          height={44}
-          style={{ borderRadius: "50%", objectFit: "cover" }}
+          style={{
+            height: "36px",
+            width: "auto",
+            filter: transparent ? "invert(1) brightness(10)" : "invert(0)",
+          }}
         />
       </Link>
 
