@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 
 type Slide = { src: string; alt: string; width: number; height: number };
 
+// Sıra bilinçli: masa üstünde çekilmiş iki kare arka arkaya gelmiyor.
+// Aralarındaki doğa fotoğrafı, hizasız masa çizgilerinin geçişte
+// üst üste binmesini engelliyor.
 const PHOTOS: Slide[] = [
-  { src: "/hero.jpg", alt: "Studio EAMO — Archeo Series", width: 4928, height: 3280 },
   { src: "/DSC01784.jpg", alt: "", width: 2400, height: 1600 },
+  { src: "/hero.jpg", alt: "Studio EAMO — Archeo Series", width: 4928, height: 3280 },
   { src: "/DSC01781.jpg", alt: "", width: 2400, height: 1600 },
 ];
 
