@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import EamoLogo from "@/components/EamoLogo";
 
 interface NavProps {
@@ -11,12 +11,18 @@ interface NavProps {
 // Hero üzerindeyken kullanılan açık ton — sitenin kırık beyazı, saf beyaz değil
 const LIGHT = "#F7F6F2";
 
+// Renk değişim sınırı, ekranın tepesinden piksel cinsinden.
+// 0  = fotoğrafın alt kenarı ekranın tepesini geçtiği an değişir.
+//      Fotoğraf sonuna kadar akar, hiçbir yeri örtülmez.
+// 39 = logonun tam ortası. Sınır çizgisi logonun içinden geçerken değişir.
+// 78 = nav'ın alt kenarı. Fotoğrafın son 78 pikselini örter — eski şerit sorunu.
+const SWITCH_AT = 0;
+
 export default function Nav({ transparent = false }: NavProps) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
-  const navRef = useRef<HTMLElement>(null);
 
-  // Nav, hero'nun alt kenarını geçtiğinde koyu moda döner.
+  // Nav, hero'nun alt kenarı SWITCH_AT çizgisini geçtiğinde koyu moda döner.
   // Sabit piksel eşiği yok — hero ne kadar uzunsa o kadar açık kalır.
   const update = useCallback(() => {
     const hero = document.querySelector<HTMLElement>("[data-hero]");
@@ -24,8 +30,7 @@ export default function Nav({ transparent = false }: NavProps) {
       setScrolled(window.scrollY > 80);
       return;
     }
-    const navHeight = navRef.current?.offsetHeight ?? 92;
-    setScrolled(hero.getBoundingClientRect().bottom <= navHeight);
+    setScrolled(hero.getBoundingClientRect().bottom <= SWITCH_AT);
   }, []);
 
   useEffect(() => {
@@ -54,7 +59,6 @@ export default function Nav({ transparent = false }: NavProps) {
 
   return (
     <nav
-      ref={navRef}
       style={{
         position: "fixed",
         top: 0,
@@ -64,14 +68,14 @@ export default function Nav({ transparent = false }: NavProps) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "28px 48px",
+        padding: "24px 48px",
         background: isLight ? "transparent" : "var(--bg)",
         transition: "background 0.3s ease",
       }}
     >
       <Link href="/" style={{ display: "block", lineHeight: 0 }}>
         <EamoLogo
-          height={36}
+          height={30}
           style={{
             color: isLight ? LIGHT : "var(--ink)",
             transition: "color 0.3s ease",
@@ -79,7 +83,7 @@ export default function Nav({ transparent = false }: NavProps) {
         />
       </Link>
 
-      <div style={{ display: "flex", gap: "40px" }}>
+      <div style={{ display: "flex", gap: "36px" }}>
         {[
           { label: "COLLECTIBLE", href: "/objects" },
           { label: "OBJECTS", href: "/objects" },
@@ -91,7 +95,7 @@ export default function Nav({ transparent = false }: NavProps) {
             href={href}
             style={{
               fontFamily: "var(--sans)",
-              fontSize: "11px",
+              fontSize: "10px",
               fontWeight: 300,
               letterSpacing: "0.14em",
               color: isLight
