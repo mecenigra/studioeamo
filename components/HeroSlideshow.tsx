@@ -22,9 +22,12 @@ const PHOTOS: Slide[] = [
 ];
 
 // Gösterim sırası. Aynı fotoğraf birden çok kez geçebilir.
-// gri → doğa → kahve → doğa → gri → kahve → (başa)
-// Tamamen masa-masa geçişi istemezsen: const SEQUENCE = [0, 1, 2, 1];
-const SEQUENCE = [0, 1, 2, 1, 0, 2];
+// gri → doğa → kahve → doğa → (başa)
+//
+// Dört geçişin dördünde de araya doğa fotoğrafı giriyor, yani masa üstünde
+// çekilmiş iki kare hiçbir yerde arka arkaya gelmiyor. Üç fotoğrafla bunu
+// sağlayan tek dizi bu; daha uzun bir dizi kurmak dördüncü fotoğraf ister.
+const SEQUENCE = [0, 1, 2, 1];
 
 const INTERVAL = 5000;      // her fotoğraf 5 saniye
 const FADE_FULL = 2500;     // normal geçiş
