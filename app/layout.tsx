@@ -1,14 +1,23 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+/* Sitenin gerçek adresi www.studioeamo.com — www'suz hâli oraya yönlendiriliyor.
+   Kart görselinin adresi de doğrudan www'lu yazılmalı: bazı önizleme
+   okuyucuları (örneğin Instagram'ın web sürümü) görsel adresindeki
+   yönlendirmeyi takip etmiyor ve kartı görselsiz gösteriyor. */
+const SITE = "https://www.studioeamo.com";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://studioeamo.com"),
+  metadataBase: new URL(SITE),
   title: "Studio EAMO",
   description: "Independent contemporary design practice based in Istanbul.",
+  alternates: {
+    canonical: SITE,
+  },
   openGraph: {
     title: "Studio EAMO",
     description: "Independent contemporary design practice based in Istanbul.",
-    url: "https://studioeamo.com",
+    url: SITE,
     siteName: "Studio EAMO",
     locale: "en_US",
     type: "website",
