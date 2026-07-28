@@ -144,6 +144,7 @@ export default function Nav({ transparent = false }: NavProps) {
     >
       <Link href="/" style={{ display: "block", lineHeight: 0, flexShrink: 0 }}>
         <EamoLogo
+          animate={false}
           height={m.logo}
           style={{
             color: isLight ? LIGHT : "var(--ink)",
