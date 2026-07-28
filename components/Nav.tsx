@@ -13,19 +13,21 @@ const LIGHT = "#F7F6F2";
 
 // Renk değişim sınırı, ekranın tepesinden piksel cinsinden.
 // 0 = fotoğrafın alt kenarı ekranın tepesini geçtiği an değişir.
-//     Fotoğraf sonuna kadar akar, hiçbir yeri örtülmez.
-// Büyütürsen fotoğrafın son pikselleri nav'ın opak zemini altında kalır.
 const SWITCH_AT = 0;
 
 /* ------------------------------------------------------------------
-   Ölçüler artık sabit değil, görüntü alanına bağlı.
+   Ölçüler görüntü alanına bağlı.
 
-   420 piksel genişlikte COMPACT değerleri, 1600'de DESKTOP değerleri
-   geçerli; arada doğrusal olarak geçiş yapılıyor.
+   375 piksel genişlikte (iPhone) COMPACT, 1600'de DESKTOP değerleri
+   geçerli; arada doğrusal geçiş var.
 
-   Yükseklik 560 pikselin altına düştüğünde (yatay telefon) genişlik ne
-   olursa olsun ölçek 0.35'te tutuluyor — orada sorun genişlik değil,
-   nav'ın dikeyde kapladığı yer.
+   İki ayrı ölçek kullanılıyor:
+   - Yatay boşluk (padX) her zaman yalnızca GENİŞLİĞE bakar. Böylece
+     app/page.tsx içindeki clamp() ile birebir aynı değeri üretir ve
+     logo, altındaki metinle aynı hizada başlar.
+   - Diğer ölçüler kısa ekranlarda (yatay telefon, yükseklik < 560)
+     ayrıca kısılır — orada sorun genişlik değil, nav'ın dikeyde
+     kapladığı yer.
 ------------------------------------------------------------------ */
 type Metrics = {
   logo: number;
@@ -35,10 +37,10 @@ type Metrics = {
   gap: number;
 };
 
-const COMPACT: Metrics = { logo: 22, font: 9, padY: 14, padX: 20, gap: 16 };
+const COMPACT: Metrics = { logo: 19, font: 8.5, padY: 12, padX: 16, gap: 11 };
 const DESKTOP: Metrics = { logo: 30, font: 10, padY: 24, padX: 48, gap: 36 };
 
-const REF_MIN = 420;
+const REF_MIN = 375;
 const REF_MAX = 1600;
 const SHORT_SCREEN = 560;
 const SHORT_SCREEN_CAP = 0.35;
@@ -49,15 +51,14 @@ function measure(): Metrics {
   const w = window.innerWidth;
   const h = window.innerHeight;
 
-  let t = (w - REF_MIN) / (REF_MAX - REF_MIN);
-  t = Math.min(1, Math.max(0, t));
-  if (h < SHORT_SCREEN) t = Math.min(t, SHORT_SCREEN_CAP);
+  const tW = Math.min(1, Math.max(0, (w - REF_MIN) / (REF_MAX - REF_MIN)));
+  const t = h < SHORT_SCREEN ? Math.min(tW, SHORT_SCREEN_CAP) : tW;
 
   return {
     logo: Math.round(lerp(COMPACT.logo, DESKTOP.logo, t)),
     font: Math.round(lerp(COMPACT.font, DESKTOP.font, t) * 10) / 10,
     padY: Math.round(lerp(COMPACT.padY, DESKTOP.padY, t)),
-    padX: Math.round(lerp(COMPACT.padX, DESKTOP.padX, t)),
+    padX: Math.round(lerp(COMPACT.padX, DESKTOP.padX, tW)),
     gap: Math.round(lerp(COMPACT.gap, DESKTOP.gap, t)),
   };
 }
@@ -91,7 +92,6 @@ export default function Nav({ transparent = false }: NavProps) {
   }, []);
 
   // Nav, hero'nun alt kenarı SWITCH_AT çizgisini geçtiğinde koyu moda döner.
-  // Sabit piksel eşiği yok — hero ne kadar uzunsa o kadar açık kalır.
   const update = useCallback(() => {
     const hero = document.querySelector<HTMLElement>("[data-hero]");
     if (!hero) {
@@ -136,6 +136,7 @@ export default function Nav({ transparent = false }: NavProps) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
+        gap: `${m.gap}px`,
         padding: `${m.padY}px ${m.padX}px`,
         background: isLight ? "transparent" : "var(--bg)",
         transition: "background 0.3s ease",

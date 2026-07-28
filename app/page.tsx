@@ -2,13 +2,30 @@ import Link from "next/link";
 import Nav from "@/components/Nav";
 import HeroSlideshow from "@/components/HeroSlideshow";
 
+/* ------------------------------------------------------------------
+   Duyarlı ölçüler.
+
+   Inline style'lar medya sorgusu tutamıyor, ama clamp() ve calc()
+   birer CSS değeri — inline style objesinin içinde sorunsuz çalışırlar.
+   Her biri 375 piksel ekranda alt sınıra, 1600'de üst sınıra oturur.
+
+   PAD_X, Nav.tsx'in ürettiği yatay boşlukla birebir aynı eğriyi
+   izler (16px → 48px). Logo ile altındaki metin bu yüzden her
+   genişlikte aynı hizada başlar. Birini değiştirirsen diğerini de
+   değiştir, yoksa hizalama bozulur.
+------------------------------------------------------------------ */
+const PAD_X = "clamp(16px, calc(6.204px + 2.612vw), 48px)";   // 16 → 48
+const PAD_Y = "clamp(64px, calc(46.86px + 4.571vw), 120px)";  // 64 → 120
+const COL_GAP = "clamp(40px, calc(27.75px + 3.265vw), 80px)"; // 40 → 80
+const LEAD = "clamp(17px, calc(16.08px + 0.245vw), 20px)";    // 17 → 20
+
 export default function Home() {
   return (
     <main>
       {/* Transparent nav üstte */}
       <Nav transparent={true} />
 
-      {/* Hero — 3 fotoğraflı slideshow, kırpılmaz */}
+      {/* Hero — slideshow kendi yüksekliğini kurar */}
       <section data-hero style={{
         position: "relative",
         width: "100%",
@@ -22,22 +39,25 @@ export default function Home() {
           right: 0,
           height: "180px",
           background: "linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 100%)",
+          pointerEvents: "none",
         }} />
       </section>
 
-      {/* İkinci bölüm — stüdyo tanımı */}
+      {/* İkinci bölüm — stüdyo tanımı.
+          auto-fit + minmax: iki sütun sığmadığında kendiliğinden tek
+          sütuna iner. Medya sorgusu gerekmiyor. */}
       <section style={{
-        padding: "120px 48px",
+        padding: `${PAD_Y} ${PAD_X}`,
         display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: "80px",
+        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+        gap: COL_GAP,
         maxWidth: "1200px",
         margin: "0 auto",
       }}>
         <div>
           <p style={{
             fontFamily: "var(--sans)",
-            fontSize: "20px",
+            fontSize: LEAD,
             fontWeight: 300,
             lineHeight: 1.7,
             color: "var(--ink)",
@@ -76,12 +96,17 @@ export default function Home() {
       </section>
 
       {/* Objects preview */}
-      <section style={{ padding: "0 48px 80px", maxWidth: "1200px", margin: "0 auto" }}>
+      <section style={{
+        padding: `0 ${PAD_X} clamp(48px, calc(38.2px + 2.612vw), 80px)`,
+        maxWidth: "1200px",
+        margin: "0 auto",
+      }}>
         <div style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "baseline",
-          marginBottom: "48px",
+          gap: "16px",
+          marginBottom: "clamp(28px, 3vw, 48px)",
           borderTop: "1px solid var(--rule)",
           paddingTop: "28px",
         }}>
@@ -101,9 +126,12 @@ export default function Home() {
             color: "var(--ink-light)",
             textDecoration: "none",
             fontWeight: 300,
+            whiteSpace: "nowrap",
           }}>View all →</Link>
         </div>
 
+        {/* Üç kare telefonda da yan yana kalıyor. Alt alta inmesini
+            istersen: "repeat(auto-fit, minmax(240px, 1fr))" */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2px" }}>
           {[
             { bg: "#2C2926", label: "Archeo I", mat: "Stoneware, black" },
@@ -118,7 +146,7 @@ export default function Home() {
               <div style={{ paddingTop: "12px" }}>
                 <p style={{
                   fontFamily: "var(--sans)",
-                  fontSize: "13px",
+                  fontSize: "clamp(11px, 1.1vw, 13px)",
                   fontWeight: 300,
                   color: "var(--ink)",
                   marginBottom: "4px",
@@ -126,7 +154,7 @@ export default function Home() {
                 }}>{item.label}</p>
                 <p style={{
                   fontFamily: "var(--sans)",
-                  fontSize: "10px",
+                  fontSize: "clamp(9px, 0.9vw, 10px)",
                   letterSpacing: "0.1em",
                   color: "var(--ink-light)",
                   textTransform: "uppercase",
@@ -138,13 +166,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer — dar ekranda alt alta sarar */}
       <footer style={{
         borderTop: "1px solid var(--rule)",
-        padding: "40px 48px",
+        padding: `clamp(28px, 3vw, 40px) ${PAD_X}`,
         display: "flex",
+        flexWrap: "wrap",
         justifyContent: "space-between",
         alignItems: "center",
+        gap: "12px 24px",
       }}>
         <span style={{
           fontFamily: "var(--sans)",
